@@ -1,0 +1,86 @@
+import bcrypt from 'bcryptjs'
+import User from "../models/user.model.js";
+import GenerateTokenandSetCookies from '../Utils/Generatetoken.js';
+
+
+export const Signup=async(req,resp)=>{
+    try{
+           const {fullname,username,password,confirmpassword,gender}=req.body;
+           if(password !==confirmpassword){
+            resp.status(400).json({error:"Password don't match"})
+           }
+           const user =await User.findOne({username})
+           if(user){
+            resp.status(400).json({error:"Username already exsist"})
+           }
+
+           const salt=await bcrypt.genSalt(10);
+           const hashpassword=await bcrypt.hash(password,salt)
+
+           const BoyProfilepic=`https://avatar.iran.liara.run/public/boy?username=${username}`
+           const GirlProfilepic=`https://avatar.iran.liara.run/public/girl?username=${username}`
+
+           const NewUser= new User({
+            fullname,
+            username,
+            password:hashpassword,
+            gender,
+            profilepic:gender==="male"? BoyProfilepic: GirlProfilepic
+           })
+              if(NewUser){
+                 GenerateTokenandSetCookies(NewUser._id,resp);
+                await NewUser.save();
+                resp.status(201).json({
+                 _id:NewUser._id,
+                 fullname:NewUser.fullname,
+                 username:NewUser.username,
+                 profilepic:NewUser.profilepic
+                })
+                    
+              }
+              else{
+                resp.status(400).json({error:"Invalid User Data"})
+
+              }
+    }
+    catch(error){
+        console.log("Error in Singup Controller", error.message)
+        resp.status(500).json("Internal Server Error")
+
+    }
+}
+export const Login= async(req,resp)=>{
+    try{
+        const {username,password}=req.body;
+        const user= await User.findOne({username})
+        const isPasswordCorrect= await bcrypt.compare(password,user?.password || "")
+
+        if(!user || !isPasswordCorrect){
+            resp.status(500).json({error:"Invalid Username or Password"})
+        }
+        GenerateTokenandSetCookies(user._id,resp)
+        resp.status(200).json({
+            _id:user._id,
+            fullname:user.fullname,
+            password:user.password,
+            profilepic:user.profilepic
+        })
+    }
+    catch(error){
+        console.log("Error in Login Controller", error.message)
+        resp.status(500).json("Internal Server Error")
+
+    }
+}
+export const Logout= (req,resp)=>{
+    try{
+        resp.cookie("jwt","",{maxAge:0});
+        resp.status(200).json('Logout Successfully')
+
+    }
+    catch(error){
+        console.log("Error in Logout Controller", error.message)
+        resp.status(500).json("Internal Server Error")
+
+    }
+}
