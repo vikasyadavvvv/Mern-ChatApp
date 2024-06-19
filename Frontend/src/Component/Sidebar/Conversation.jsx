@@ -2,7 +2,6 @@
 // Conversation.jsx
 import { useSocketContext } from "../../context/socketContext";
 import useConversation from "../../zustand/useConversation";
-import avatarImage from '../../assets/avatar.png'; // Adjust the path relative to your component location
 
 
 const Conversation = ({ conversation, lastIdx, emoji }) => {
@@ -22,7 +21,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
                 <div className={`avatar ${isOnline ? "online" : ""}`}>
                     <div className='w-12 h-12 rounded-full overflow-hidden'>
                     <img
-                     src={conversation.profilepic || avatarImage} // Replace with your fallback image path
+                     src={conversation.profilepic || 'https://tse3.mm.bing.net/th?id=OIP.Cl56H6WgxJ8npVqyhefTdQHaHa&pid=Api&P=0&h=180'} // Replace with your fallback image path
                      alt='user avatar'
                     className="object-cover w-full h-full"
                        />
