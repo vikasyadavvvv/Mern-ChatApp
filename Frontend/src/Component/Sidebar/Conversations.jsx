@@ -7,7 +7,7 @@ const Conversations = () => {
     console.log("CONVERSATION", conversations);
 
     return (
-        <div className='py-2 flex flex-col overflow-auto h-full max-h-full'> {/* Ensure max height for small screens */}
+        <div className='py-2 flex flex-col overflow-auto h-50 max-h-full'> {/* Ensure max height for small screens */}
             {loading ? (
                 <div className='flex justify-center items-center h-full'>
                     <span className='loading loading-spinner mx-auto'></span>
