@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4));
+	background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(14, 8, 8, 0.466));
 }
 
 ::-webkit-scrollbar {

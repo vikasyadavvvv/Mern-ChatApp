@@ -1,17 +1,15 @@
-import Sidebar from "../../Component/Sidebar/Sidebar";
-import MessageContainer from "../../Component/message/MessageContainer";
+import Conversations from "./Conversations";
+import LogoutButton from "./Logout";
+import SearchInput from "./SearchInput";
 
-const Home = () => {
-    return (  
-        <div className='flex flex-col sm:flex-row h-screen w-screen overflow-hidden bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0'>
-            <div className='flex flex-col h-64 sm:h-64 sm:w-1/3 md:w-1/4 lg:w-1/5 overflow-auto'> {/* Sidebar container with responsive height */}
-                <Sidebar />
-            </div>
-            <div className='flex-1 flex flex-col h-full overflow-auto'>
-                <MessageContainer />
-            </div>
-        </div>
-    );
-}
- 
-export default Home;
+const Sidebar = () => {
+	return (
+		<div className='border-r border-slate-500 p-4 flex flex-col'>
+			<SearchInput />
+			<div className='divider px-3'></div>
+			<Conversations />
+			<LogoutButton />
+		</div>
+	);
+};
+export default Sidebar;
