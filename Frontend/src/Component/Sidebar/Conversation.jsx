@@ -20,7 +20,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
                 <div className={`avatar ${isOnline ? "online" : ""}`}>
                     <div className='w-12 h-12 rounded-full overflow-hidden'>
                     <img
-                     src={conversation.profilepic || '/default-avatar.png'} // Replace with your fallback image path
+                     src={conversation.profilepic || 'C:\Users\bipin\OneDrive\Desktop\Chat\Frontend\src\assets\avarar.png'} // Replace with your fallback image path
                      alt='user avatar'
                     className="object-cover w-full h-full"
                        />
