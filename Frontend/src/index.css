@@ -6,24 +6,44 @@ body {
 	background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(14, 8, 8, 0.466));
 }
 
+/* Custom scrollbar styles for all screen sizes */
 ::-webkit-scrollbar {
 	width: 8px;
-}
-
-::-webkit-scrollbar-track {
+  }
+  
+  ::-webkit-scrollbar-track {
 	background: #555;
-}
-
-::-webkit-scrollbar-thumb {
+  }
+  
+  ::-webkit-scrollbar-thumb {
 	background: #121212;
 	border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
 	background: #242424;
-}
-
-
+  }
+  
+  /* Custom scrollbar styles for small screens */
+  @media (max-width: 640px) {
+	::-webkit-scrollbar {
+	  width: 6px; /* Adjusted width for small screens */
+	}
+  
+	::-webkit-scrollbar-track {
+	  background: #666; /* Adjusted background color for small screens */
+	}
+  
+	::-webkit-scrollbar-thumb {
+	  background: #1a1a1a; /* Adjusted thumb color for small screens */
+	  border-radius: 3px; /* Adjusted border-radius for small screens */
+	}
+  
+	::-webkit-scrollbar-thumb:hover {
+	  background: #2a2a2a; /* Adjusted hover color for small screens */
+	}
+  }
+  
 
 
 .shake {
