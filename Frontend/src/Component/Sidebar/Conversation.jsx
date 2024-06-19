@@ -2,6 +2,8 @@
 // Conversation.jsx
 import { useSocketContext } from "../../context/socketContext";
 import useConversation from "../../zustand/useConversation";
+import avatarImage from '../../assets/avatar.png'; // Adjust the path relative to your component location
+
 
 const Conversation = ({ conversation, lastIdx, emoji }) => {
     const { selectedConversation, setSelectedConversation } = useConversation();
@@ -20,7 +22,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
                 <div className={`avatar ${isOnline ? "online" : ""}`}>
                     <div className='w-12 h-12 rounded-full overflow-hidden'>
                     <img
-                     src={conversation.profilepic || 'C:\Users\bipin\OneDrive\Desktop\Chat\Frontend\src\assets\avarar.png'} // Replace with your fallback image path
+                     src={conversation.profilepic || avatarImage} // Replace with your fallback image path
                      alt='user avatar'
                     className="object-cover w-full h-full"
                        />
@@ -28,7 +30,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
                 </div>
                 <div className='flex flex-col flex-1'>
                     <div className='flex justify-between items-center'>
-                        <p className='font-bold text-gray-800 truncate'>{conversation.fullName}</p>
+                        <p className='font-bold text-white truncate'>{conversation.fullName}</p>
                         <span className='text-xl'>{emoji}</span>
                     </div>
                 </div>
