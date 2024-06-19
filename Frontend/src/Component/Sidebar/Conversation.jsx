@@ -12,18 +12,18 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
     return (
         <>
             <div 
-                className={`flex gap-2 items-center hover:bg-sky-500 rounded p-2 cursor-pointer transition duration-200 
+                className={`flex gap-2 items-center bg-black hover:bg-sky-500 rounded p-2 cursor-pointer transition duration-200 
                     ${isSelected ? "bg-sky-500" : "bg-black"}
                 `}
                 onClick={() => setSelectedConversation(conversation)}
             >
                 <div className={`avatar ${isOnline ? "online" : ""}`}>
                     <div className='w-12 h-12 rounded-full overflow-hidden'>
-                        <img
-                            src={conversation.profilepic}
-                            alt='user avatar'
-                            className="object-cover w-full h-full"
-                        />
+                    <img
+                     src={conversation.profilepic || '/default-avatar.png'} // Replace with your fallback image path
+                     alt='user avatar'
+                    className="object-cover w-full h-full"
+                       />
                     </div>
                 </div>
                 <div className='flex flex-col flex-1'>
