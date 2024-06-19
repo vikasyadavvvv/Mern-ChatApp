@@ -4,7 +4,7 @@
 
 body {
 	background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4));
-	height: 100vh;
+	overflow: auto;
 }
 
 ::-webkit-scrollbar {
