@@ -1,5 +1,4 @@
 
-
 // Conversation.jsx
 import { useSocketContext } from "../../context/socketContext";
 import useConversation from "../../zustand/useConversation";
@@ -14,7 +13,7 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
         <>
             <div 
                 className={`flex gap-2 items-center hover:bg-sky-500 rounded p-2 cursor-pointer transition duration-200 
-                    ${isSelected ? "bg-sky-500" : "bg-white"}
+                    ${isSelected ? "bg-sky-500" : "bg-black"}
                 `}
                 onClick={() => setSelectedConversation(conversation)}
             >
