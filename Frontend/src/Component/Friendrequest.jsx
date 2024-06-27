@@ -10,6 +10,7 @@ const FriendRequests = () => {
     const [friendRequests, setFriendRequests] = useState([]);
     const [hasRequest, setHasRequest] = useState(false);
     const [requestAccepted, setRequestAccepted] = useState(false);
+    const [requestRejected, setRequestRejected] = useState(false); // New state to track if request is rejected
 
     useEffect(() => {
         const fetchFriendRequests = async () => {
@@ -33,10 +34,20 @@ const FriendRequests = () => {
                 );
                 setHasRequest(!!existingRequest);
 
-                if (existingRequest && existingRequest.status === 'accepted') {
-                    setRequestAccepted(true);
+                if (existingRequest) {
+                    if (existingRequest.status === 'accepted') {
+                        setRequestAccepted(true);
+                        setRequestRejected(false);
+                    } else if (existingRequest.status === 'rejected') {
+                        setRequestRejected(true);
+                        setRequestAccepted(false);
+                    } else {
+                        setRequestAccepted(false);
+                        setRequestRejected(false);
+                    }
                 } else {
                     setRequestAccepted(false);
+                    setRequestRejected(false);
                 }
             } catch (error) {
                 console.error('Error fetching friend requests:', error);
@@ -73,6 +84,7 @@ const FriendRequests = () => {
             ));
 
             setRequestAccepted(true); // Mark request as accepted
+            setRequestRejected(false);
         } catch (error) {
             console.error('Error accepting friend request:', error);
         }
@@ -93,6 +105,9 @@ const FriendRequests = () => {
             setFriendRequests(friendRequests.map(request =>
                 request._id === requestId ? { ...request, status: 'rejected' } : request
             ));
+            setRequestAccepted(false);
+            setRequestRejected(true); // Mark request as rejected
+            setHasRequest(false); // Allow sender to send a new request
         } catch (error) {
             console.error('Error rejecting friend request:', error);
         }
@@ -110,6 +125,7 @@ const FriendRequests = () => {
             });
 
             setHasRequest(true);
+            setRequestRejected(false); // Reset rejection state on new request
         } catch (error) {
             console.error('Error sending friend request:', error);
         }
@@ -134,6 +150,13 @@ const FriendRequests = () => {
                         <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl'>Send Request</button>
                     </div>
                 )
+            )}
+
+            {requestRejected && (
+                <div className='flex items-center justify-center mt-4'>
+                    <p className='text-red-500'>Your request was rejected by {selectedConversation.fullName}.</p>
+                    <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl ml-2'>Send Request</button>
+                </div>
             )}
         </div>
     );
