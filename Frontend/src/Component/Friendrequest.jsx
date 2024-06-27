@@ -170,20 +170,26 @@ const FriendRequests = () => {
     );
 
     return (
-        <div>
+        <div className="flex flex-col items-center justify-center">
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <div>
+                <div className="w-full max-w-md">
                     {pendingRequest ? (
                         <div className='flex items-center justify-center mt-4'>
-                            <button onClick={() => handleAcceptRequest(pendingRequest._id)} className='btn btn-primary rounded-3xl'>Accept</button>
-                            <button onClick={() => handleRejectRequest(pendingRequest._id)} className='btn btn-secondary rounded-3xl ml-2'>Reject</button>
+                            <button onClick={() => handleAcceptRequest(pendingRequest._id)} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
+                                Accept
+                            </button>
+                            <button onClick={() => handleRejectRequest(pendingRequest._id)} className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2'>
+                                Reject
+                            </button>
                         </div>
                     ) : (
                         !hasRequest && !requestAccepted && (
                             <div className='flex items-center justify-center mt-4'>
-                                <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl'>Send Request</button>
+                                <button onClick={handleSendRequest} className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'>
+                                    Send Request
+                                </button>
                             </div>
                         )
                     )}
@@ -191,27 +197,33 @@ const FriendRequests = () => {
                     {requestRejected && (
                         <div className='flex items-center justify-center mt-4'>
                             <p className='text-red-500'>Your request was rejected by {selectedConversation.fullName}.</p>
-                            <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl ml-2'>Send Request</button>
+                            <button onClick={handleSendRequest} className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2'>
+                                Send Request
+                            </button>
                         </div>
                     )}
 
                     {/* Display all friend requests */}
                     <div className='mt-4'>
-                        <h2>Friend Requests</h2>
+                        <h2 className="text-lg font-bold mb-2">Friend Requests</h2>
                         {friendRequests.map(request => (
-                            <div key={request._id}>
-                                <p>{request.requester.username} sent you a friend request.</p>
+                            <div key={request._id} className="bg-gray-100 p-4 rounded mb-2">
+                                <p>{selectedConversation.fullName} sent you a friend request.</p>
                                 {request.status === 'pending' && (
-                                    <div className='flex'>
-                                        <button onClick={() => handleAcceptRequest(request._id)}>Accept</button>
-                                        <button onClick={() => handleRejectRequest(request._id)}>Reject</button>
+                                    <div className='flex mt-2'>
+                                        <button onClick={() => handleAcceptRequest(request._id)} className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded'>
+                                            Accept
+                                        </button>
+                                        <button onClick={() => handleRejectRequest(request._id)} className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded ml-2'>
+                                            Reject
+                                        </button>
                                     </div>
                                 )}
                                 {request.status === 'accepted' && (
-                                    <p>You accepted {request.requester.username}'s request.</p>
+                                    <p className="mt-2">You accepted {request.requester.username}'s request.</p>
                                 )}
                                 {request.status === 'rejected' && (
-                                    <p>You rejected {request.requester.username}'s request.</p>
+                                    <p className="mt-2">You rejected {request.requester.username}'s request.</p>
                                 )}
                             </div>
                         ))}
