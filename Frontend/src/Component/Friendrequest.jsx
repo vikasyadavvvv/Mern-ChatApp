@@ -4,11 +4,10 @@ import { useAuthContext } from '../context/AuthContext';
 import useConversation from '../zustand/useConversation';
 
 const FriendRequests = () => {
-    const { selectedConversation } = useConversation();
     const { socket } = useSocketContext();
     const { authUser } = useAuthContext();
+    const { selectedConversation } = useConversation();
     const [friendRequests, setFriendRequests] = useState([]);
-    const [sentRequests, setSentRequests] = useState([]);
     const [hasRequest, setHasRequest] = useState(false);
     const [requestAccepted, setRequestAccepted] = useState(false);
 
@@ -20,16 +19,13 @@ const FriendRequests = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    credentials: 'include',
+                    credentials: 'include', // Ensure cookies are sent with the request
                 });
                 if (!response.ok) {
                     throw new Error('Failed to fetch friend requests');
                 }
                 const data = await response.json();
                 setFriendRequests(data);
-
-                const userSentRequests = data.filter(request => request.requester._id === authUser._id);
-                setSentRequests(userSentRequests);
 
                 const existingRequest = data.find(request =>
                     (request.requester._id === authUser._id && request.recipient._id === selectedConversation._id) ||
@@ -42,8 +38,6 @@ const FriendRequests = () => {
                 } else {
                     setRequestAccepted(false);
                 }
-
-                localStorage.setItem('hasRequest', !!existingRequest);
             } catch (error) {
                 console.error('Error fetching friend requests:', error);
             }
@@ -69,7 +63,7 @@ const FriendRequests = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',
+                credentials: 'include', // Ensure cookies are sent with the request
                 body: JSON.stringify({ requestId }),
             });
             socket.emit('acceptFriendRequest', { requestId });
@@ -78,8 +72,7 @@ const FriendRequests = () => {
                 request._id === requestId ? { ...request, status: 'accepted' } : request
             ));
 
-            setRequestAccepted(true);
-            localStorage.setItem('hasRequest', true);
+            setRequestAccepted(true); // Mark request as accepted
         } catch (error) {
             console.error('Error accepting friend request:', error);
         }
@@ -92,7 +85,7 @@ const FriendRequests = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',
+                credentials: 'include', // Ensure cookies are sent with the request
                 body: JSON.stringify({ requestId }),
             });
             socket.emit('rejectFriendRequest', { requestId });
@@ -105,53 +98,42 @@ const FriendRequests = () => {
         }
     };
 
-    const handleSendRequest = async (receiverId) => {
+    const handleSendRequest = async () => {
         try {
             await fetch('/api/friend-requests/send-request', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',
+                credentials: 'include', // Ensure cookies are sent with the request
                 body: JSON.stringify({ requesterId: authUser._id, recipientId: selectedConversation._id }),
             });
 
-            setSentRequests([...sentRequests, { requester: { _id: authUser._id }, recipient: { _id: receiverId }, status: 'pending' }]);
             setHasRequest(true);
-            localStorage.setItem('hasRequest', true);
         } catch (error) {
             console.error('Error sending friend request:', error);
         }
     };
 
-    useEffect(() => {
-        const storedHasRequest = localStorage.getItem('hasRequest') === 'true';
-        setHasRequest(storedHasRequest);
-    }, []);
+    const pendingRequest = friendRequests.find(request =>
+        request.status === 'pending' &&
+        request.recipient._id === authUser._id &&
+        request.requester._id === selectedConversation._id
+    );
 
     return (
-        <div className='py-2 flex flex-col flex-grow h-full overflow-auto'>
-            <h2 className='text-lg font-bold text-white text-center mb-4'>Friend Requests</h2>
-            {friendRequests.map(request => (
-                <div key={request._id} className='flex flex-col sm:flex-row items-center justify-between mb-4 sm:mb-2'>
-                    <div className='flex items-center'>
-                        <span className='text-white mr-2'>{authUser.fullName} wants to be your friend.</span>
-                        {request.status === 'pending' && (
-                            <div className='flex gap-2'>
-                                <button onClick={() => handleAcceptRequest(request._id)} className='btn btn-primary rounded-3xl'>Accept</button>
-                                <button onClick={() => handleRejectRequest(request._id)} className='btn btn-secondary rounded-3xl'>Reject</button>
-                            </div>
-                        )}
-                        {request.status === 'rejected' && (
-                            <span className='text-red-500'>Your request has been rejected.</span>
-                        )}
-                    </div>
-                </div>
-            ))}
-            {!(requestAccepted || hasRequest) && (
+        <div>
+            {pendingRequest ? (
                 <div className='flex items-center justify-center mt-4'>
-                    <button onClick={() => handleSendRequest(selectedConversation._id)} className='btn btn-primary rounded-3xl'>Send Request</button>
+                    <button onClick={() => handleAcceptRequest(pendingRequest._id)} className='btn btn-primary rounded-3xl'>Accept</button>
+                    <button onClick={() => handleRejectRequest(pendingRequest._id)} className='btn btn-secondary rounded-3xl ml-2'>Reject</button>
                 </div>
+            ) : (
+                !hasRequest && !requestAccepted && (
+                    <div className='flex items-center justify-center mt-4'>
+                        <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl'>Send Request</button>
+                    </div>
+                )
             )}
         </div>
     );
