@@ -35,7 +35,6 @@ const MessageContainer = () => {
 
                 const data = await response.json();
                 setFriendRequestStatus(data.status);
-
             } catch (error) {
                 console.error('Error fetching friend request status:', error);
             }
@@ -43,7 +42,6 @@ const MessageContainer = () => {
 
         fetchFriendRequestStatus();
 
-        // Add socket event listeners here
         if (socket) {
             socket.on('friendRequestAccepted', fetchFriendRequestStatus);
             socket.on('friendRequestRejected', fetchFriendRequestStatus);
@@ -57,7 +55,6 @@ const MessageContainer = () => {
         };
     }, [socket, authUser, selectedConversation]);
 
-    // Handler for sending messages (assumed function)
     const handleSendMessage = (message) => {
         // Example implementation
         console.log('Sending message:', message);

@@ -145,9 +145,6 @@ const FriendRequests = () => {
                         {request.status === 'rejected' && (
                             <span className='text-red-500'>Your request has been rejected.</span>
                         )}
-                        {request.status === 'accepted' && (
-                            <span className='text-green-500'>You are now friends. Start chatting!</span>
-                        )}
                     </div>
                 </div>
             ))}
