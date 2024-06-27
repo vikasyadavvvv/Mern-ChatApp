@@ -1,29 +1,30 @@
-
-// Conversation.jsx
-import { useSocketContext } from "../../context/socketContext";
-import useConversation from "../../zustand/useConversation";
-
+import React from 'react';
+import useConversation from '../../zustand/useConversation';
+import { useSocketContext } from '../../context/socketContext';
 
 const Conversation = ({ conversation, lastIdx, emoji }) => {
     const { selectedConversation, setSelectedConversation } = useConversation();
-    const isSelected = selectedConversation?._id === conversation._id;
     const { onlineUsers } = useSocketContext();
     const isOnline = onlineUsers.includes(conversation._id);
+
+    const handleSelectConversation = () => {
+        setSelectedConversation(conversation);
+    };
 
     return (
         <>
             <div 
-				className={`flex gap-2 items-center bg-black hover:bg-sky-500 rounded p-2 py-1 cursor-pointer
-                    ${isSelected ? "bg-sky-500" : "bg-black"}
+                className={`flex gap-2 items-center bg-black hover:bg-sky-500 rounded p-2 py-1 cursor-pointer
+                    ${selectedConversation?._id === conversation._id ? "bg-sky-500" : "bg-black"}
                 `}
-                onClick={() => setSelectedConversation(conversation)}
+                onClick={handleSelectConversation}
             >
                 <div className={`avatar ${isOnline ? "online" : ""}`}>
-                    <div className='w-12 h-12 rounded-full '>
-                    <img
-                     src={conversation.profilepic || 'https://tse3.mm.bing.net/th?id=OIP.Cl56H6WgxJ8npVqyhefTdQHaHa&pid=Api&P=0&h=180'} // Replace with your fallback image path
-                     alt='user avatar'
-                       />
+                    <div className='w-12 h-12 rounded-full'>
+                        <img
+                            src={conversation.profilepic || 'https://tse3.mm.bing.net/th?id=OIP.Cl56H6WgxJ8npVqyhefTdQHaHa&pid=Api&P=0&h=180'}
+                            alt='user avatar'
+                        />
                     </div>
                 </div>
                 <div className='flex flex-col flex-1'>

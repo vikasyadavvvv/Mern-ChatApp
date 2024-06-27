@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.19",
+    "axios": "^1.7.2",
     "chat": "file:..",
+    "cors": "^2.8.5",
     "http-proxy-middleware": "^3.0.0",
     "postcss": "^8.4.38",
     "react": "^18.2.0",
