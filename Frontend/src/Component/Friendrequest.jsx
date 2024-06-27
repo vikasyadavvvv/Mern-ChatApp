@@ -11,9 +11,11 @@ const FriendRequests = () => {
     const [hasRequest, setHasRequest] = useState(false);
     const [requestAccepted, setRequestAccepted] = useState(false);
     const [requestRejected, setRequestRejected] = useState(false); // New state to track if request is rejected
+    const [isLoading, setIsLoading] = useState(false); // Loading state
 
     useEffect(() => {
         const fetchFriendRequests = async () => {
+            setIsLoading(true); // Set loading state before fetch
             try {
                 const response = await fetch('/api/friend-requests', {
                     method: 'GET',
@@ -27,6 +29,7 @@ const FriendRequests = () => {
                 }
                 const data = await response.json();
                 setFriendRequests(data);
+                setIsLoading(false); // Clear loading state after fetch
 
                 const existingRequest = data.find(request =>
                     (request.requester._id === authUser._id && request.recipient._id === selectedConversation._id) ||
@@ -51,6 +54,7 @@ const FriendRequests = () => {
                 }
             } catch (error) {
                 console.error('Error fetching friend requests:', error);
+                setIsLoading(false); // Clear loading state on error
             }
         };
 
@@ -131,6 +135,34 @@ const FriendRequests = () => {
         }
     };
 
+    const getFriendRequestStatus = async () => {
+        try {
+            const response = await fetch(`/api/friend-requests/status/${authUser._id}/${selectedConversation._id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include', // Ensure cookies are sent with the request
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch friend request status');
+            }
+            const data = await response.json();
+
+            if (data.status === 'not_requested') {
+                console.log('No friend request exists.');
+            } else if (data.status === 'pending') {
+                console.log('Friend request is pending.');
+            } else if (data.status === 'accepted') {
+                console.log('Friend request is accepted.');
+            } else if (data.status === 'rejected') {
+                console.log('Friend request is rejected.');
+            }
+        } catch (error) {
+            console.error('Error fetching friend request status:', error);
+        }
+    };
+
     const pendingRequest = friendRequests.find(request =>
         request.status === 'pending' &&
         request.recipient._id === authUser._id &&
@@ -139,23 +171,51 @@ const FriendRequests = () => {
 
     return (
         <div>
-            {pendingRequest ? (
-                <div className='flex items-center justify-center mt-4'>
-                    <button onClick={() => handleAcceptRequest(pendingRequest._id)} className='btn btn-primary rounded-3xl'>Accept</button>
-                    <button onClick={() => handleRejectRequest(pendingRequest._id)} className='btn btn-secondary rounded-3xl ml-2'>Reject</button>
-                </div>
+            {isLoading ? (
+                <p>Loading...</p>
             ) : (
-                !hasRequest && !requestAccepted && (
-                    <div className='flex items-center justify-center mt-4'>
-                        <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl'>Send Request</button>
-                    </div>
-                )
-            )}
+                <div>
+                    {pendingRequest ? (
+                        <div className='flex items-center justify-center mt-4'>
+                            <button onClick={() => handleAcceptRequest(pendingRequest._id)} className='btn btn-primary rounded-3xl'>Accept</button>
+                            <button onClick={() => handleRejectRequest(pendingRequest._id)} className='btn btn-secondary rounded-3xl ml-2'>Reject</button>
+                        </div>
+                    ) : (
+                        !hasRequest && !requestAccepted && (
+                            <div className='flex items-center justify-center mt-4'>
+                                <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl'>Send Request</button>
+                            </div>
+                        )
+                    )}
 
-            {requestRejected && (
-                <div className='flex items-center justify-center mt-4'>
-                    <p className='text-red-500'>Your request was rejected by {selectedConversation.fullName}.</p>
-                    <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl ml-2'>Send Request</button>
+                    {requestRejected && (
+                        <div className='flex items-center justify-center mt-4'>
+                            <p className='text-red-500'>Your request was rejected by {selectedConversation.fullName}.</p>
+                            <button onClick={handleSendRequest} className='btn btn-primary rounded-3xl ml-2'>Send Request</button>
+                        </div>
+                    )}
+
+                    {/* Display all friend requests */}
+                    <div className='mt-4'>
+                        <h2>Friend Requests</h2>
+                        {friendRequests.map(request => (
+                            <div key={request._id}>
+                                <p>{request.requester.username} sent you a friend request.</p>
+                                {request.status === 'pending' && (
+                                    <div className='flex'>
+                                        <button onClick={() => handleAcceptRequest(request._id)}>Accept</button>
+                                        <button onClick={() => handleRejectRequest(request._id)}>Reject</button>
+                                    </div>
+                                )}
+                                {request.status === 'accepted' && (
+                                    <p>You accepted {request.requester.username}'s request.</p>
+                                )}
+                                {request.status === 'rejected' && (
+                                    <p>You rejected {request.requester.username}'s request.</p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
