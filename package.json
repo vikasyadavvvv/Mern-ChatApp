@@ -8,6 +8,8 @@
     "start":"nodemon Backend/server.js",
     "build":"npm install && npm install --prefix Frontend && npm run build  --prefix Frontend"
 
+
+
   },
   "type": "module",
   "keywords": [],

@@ -8,7 +8,6 @@ import cors from 'cors';
 import AuthRoute from './routes/auth.route.js'
 import MessageRoute from './routes/message.route.js'
 import UserRoute from './routes/user.route.js'
-import friendRequestRoute from './routes/friendrequest.route.js'
 
 
 import ConnectMongoDb from "./Db/Connecttomongodb.js";
@@ -35,7 +34,6 @@ app.use(cookieParser());
 app.use("/api/auth",AuthRoute)
 app.use("/api/messages",MessageRoute)
 app.use("/api/users",UserRoute)
-app.use("/api/friend-requests",friendRequestRoute)
 
 app.use(express.static(path.join(__dirname,"/Frontend/dist")))
 
